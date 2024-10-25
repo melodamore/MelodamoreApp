@@ -1,7 +1,6 @@
-import os
 import json
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, CallbackContext
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 # Load allowed user IDs from the JSON file
 def load_users():
@@ -16,7 +15,7 @@ def save_users(user_ids):
         json.dump(data, file, indent=2)
 
 # Command to add a user ID
-def add_user(update: Update, context: CallbackContext):
+async def add_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     try:
         user_id = int(context.args[0])
@@ -25,14 +24,14 @@ def add_user(update: Update, context: CallbackContext):
         if user_id not in allowed_user_ids:
             allowed_user_ids.append(user_id)
             save_users(allowed_user_ids)
-            update.message.reply_text(f'User ID {user_id} has been added.')
+            await update.message.reply_text(f'User ID {user_id} has been added.')
         else:
-            update.message.reply_text(f'User ID {user_id} is already in the list.')
+            await update.message.reply_text(f'User ID {user_id} is already in the list.')
     except (IndexError, ValueError):
-        update.message.reply_text('Please provide a valid user ID.')
+        await update.message.reply_text('Please provide a valid user ID.')
 
 # Command to remove a user ID
-def remove_user(update: Update, context: CallbackContext):
+async def remove_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     try:
         user_id = int(context.args[0])
@@ -41,38 +40,36 @@ def remove_user(update: Update, context: CallbackContext):
         if user_id in allowed_user_ids:
             allowed_user_ids.remove(user_id)
             save_users(allowed_user_ids)
-            update.message.reply_text(f'User ID {user_id} has been removed.')
+            await update.message.reply_text(f'User ID {user_id} has been removed.')
         else:
-            update.message.reply_text(f'User ID {user_id} is not in the list.')
+            await update.message.reply_text(f'User ID {user_id} is not in the list.')
     except (IndexError, ValueError):
-        update.message.reply_text('Please provide a valid user ID.')
+        await update.message.reply_text('Please provide a valid user ID.')
 
 # Command to list all allowed user IDs
-def list_users(update: Update, context: CallbackContext):
+async def list_users(update: Update, context: ContextTypes.DEFAULT_TYPE):
     allowed_user_ids = load_users()
     if allowed_user_ids:
-        update.message.reply_text(f'Allowed User IDs:\n{", ".join(map(str, allowed_user_ids))}')
+        await update.message.reply_text(f'Allowed User IDs:\n{", ".join(map(str, allowed_user_ids))}')
     else:
-        update.message.reply_text('No users are currently allowed.')
+        await update.message.reply_text('No users are currently allowed.')
 
 # Command to help
-def help_command(update: Update, context: CallbackContext):
-    update.message.reply_text('Available commands:\n/add_user [userID]\n/remove_user [userID]\n/list_users\n/help')
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text('Available commands:\n/add_user [userID]\n/remove_user [userID]\n/list_users\n/help')
 
 # Main function to start the bot
 def main():
     # Insert your Telegram bot token directly here
     token = '7771697129:AAEJukzZff1D-dBex9SrWkFUsu_AtPCnzH0'  # Replace with your actual token
-    updater = Updater(token)
+    application = ApplicationBuilder().token(token).build()
 
-    dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler("add_user", add_user))
-    dispatcher.add_handler(CommandHandler("remove_user", remove_user))
-    dispatcher.add_handler(CommandHandler("list_users", list_users))
-    dispatcher.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("add_user", add_user))
+    application.add_handler(CommandHandler("remove_user", remove_user))
+    application.add_handler(CommandHandler("list_users", list_users))
+    application.add_handler(CommandHandler("help", help_command))
 
-    updater.start_polling()
-    updater.idle()
+    application.run_polling()
 
 if __name__ == '__main__':
     main()
