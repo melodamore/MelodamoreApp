@@ -150,35 +150,46 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        const allowedUserIds = [123456789, 987654321, 7136332346, 6827278974]; // Replace with actual allowed user IDs
+        let allowedUserIds = []; // Initialize an empty array
 
         window.onload = function() {
-            const userData = Telegram.WebApp.initDataUnsafe?.user;
+            // Fetch allowed user IDs from the JSON file
+            fetch('auth_users.json')
+                .then(response => response.json())
+                .then(data => {
+                    allowedUserIds = data.allowedUserIds; // Assign the fetched user IDs
 
-            if (window.innerWidth > 768) {
-                document.body.innerHTML = "<div style='color: #fff; text-align: center; padding: 20px;'><h1>Melodamore is only available on mobile devices.</h1><p>Please open this app on a mobile phone or tablet.</p></div>";
-                return;
-            }
+                    const userData = Telegram.WebApp.initDataUnsafe?.user;
 
-            if (userData && allowedUserIds.includes(userData.id)) {
-                // Authorized user, show the main app content and tab bar
-                document.querySelector('.tab-bar').style.display = 'flex';
+                    if (window.innerWidth > 768) {
+                        document.body.innerHTML = "<div style='color: #fff; text-align: center; padding: 20px;'><h1>Melodamore is only available on mobile devices.</h1><p>Please open this app on a mobile phone or tablet.</p></div>";
+                        return;
+                    }
 
-                // Set home as the default active tab on first load
-                switchTab('home');
+                    if (userData && allowedUserIds.includes(userData.id)) {
+                        // Authorized user, show the main app content and tab bar
+                        document.querySelector('.tab-bar').style.display = 'flex';
 
-                // Populate profile tab
-                document.getElementById('name').textContent = `${userData.first_name} ${userData.last_name || ""}`;
-                document.getElementById('username').textContent = userData.username || "N/A";
-                document.getElementById('user-id').textContent = userData.id;
+                        // Set home as the default active tab on first load
+                        switchTab('home');
 
-                if (userData.photo_url) {
-                    document.getElementById('profile-pic').src = userData.photo_url;
-                }
-            } else {
-                // Unauthorized user, show access denied message only
-                document.getElementById('access-denied').classList.add('active');
-            }
+                        // Populate profile tab
+                        document.getElementById('name').textContent = `${userData.first_name} ${userData.last_name || ""}`;
+                        document.getElementById('username').textContent = userData.username || "N/A";
+                        document.getElementById('user-id').textContent = userData.id;
+
+                        if (userData.photo_url) {
+                            document.getElementById('profile-pic').src = userData.photo_url;
+                        }
+                    } else {
+                        // Unauthorized user, show access denied message only
+                        document.getElementById('access-denied').classList.add('active');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching allowed users:', error);
+                    // Handle error (e.g., show an error message or set a default user ID list)
+                });
         };
 
         function switchTab(tabId) {
@@ -204,4 +215,4 @@
         }
     </script>
 </body>
-          </html>
+</html>
