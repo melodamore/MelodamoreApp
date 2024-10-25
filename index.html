@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>Melodamore Trading App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+            background: linear-gradient(135deg, #4a90e2, #9013fe);
+            overflow-x: hidden;
+        }
+
+        .container, .access-denied {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            color: #fff;
+            display: none;
+        }
+
+        .container.active, .access-denied.active {
+            display: block;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 15px 0;
+        }
+
+        .profile-pic {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            margin: 10px auto;
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 500px;
+            background-color: #333;
+            display: none;
+            justify-content: space-around;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px 5px;
+            text-align: center;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .tab:hover {
+            background-color: #555;
+        }
+
+        .active-tab {
+            background-color: #4a90e2;
+        }
+
+        .access-denied p {
+            font-size: 1.1rem;
+            margin-top: 20px;
+        }
+
+        .access-denied button {
+            background-color: #fff;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            .tab {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Tab -->
+    <div id="home" class="container active">
+        <h1>Welcome to Melodamore!</h1>
+        <p>Explore binary and forex trading. Get started with Melodamore and enhance your trading knowledge!</p>
+    </div>
+
+    <!-- Trade Tab -->
+    <div id="trade" class="container">
+        <h1>Trade</h1>
+        <p>Start trading in binary and forex. Track market trends, analyze charts, and make informed trades.</p>
+    </div>
+
+    <!-- Learn Tab -->
+    <div id="learn" class="container">
+        <h1>Learn</h1>
+        <p>Access tutorials, tips, and guides to master binary and forex trading.</p>
+    </div>
+
+    <!-- Profile Tab -->
+    <div id="profile" class="container">
+        <h1>Your Profile</h1>
+        <img id="profile-pic" class="profile-pic" src="https://via.placeholder.com/80" alt="Profile Picture" />
+        <p><b>Name:</b> <span id="name">Loading...</span></p>
+        <p><b>Username:</b> <span id="username">Loading...</span></p>
+        <p><b>ID:</b> <span id="user-id">Loading...</span></p>
+    </div>
+
+    <!-- Access Denied Message -->
+    <div id="access-denied" class="access-denied">
+        <h1>Access Denied</h1>
+        <p>You are not authorized to access this app. Please contact the administrator.</p>
+        <button onclick="messageSupport()">Message Support</button>
+    </div>
+
+    <!-- Bottom Navigation Tabs -->
+    <div class="tab-bar">
+        <div class="tab active-tab" onclick="switchTab('home')"><i class="fas fa-home"></i><br>Home</div>
+        <div class="tab" onclick="switchTab('trade')"><i class="fas fa-chart-line"></i><br>Trade</div>
+        <div class="tab" onclick="switchTab('learn')"><i class="fas fa-book"></i><br>Learn</div>
+        <div class="tab" onclick="switchTab('profile')"><i class="fas fa-user"></i><br>Profile</div>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        const allowedUserIds = [123456789, 987654321, 7136332346, 6827278974]; // Replace with actual allowed user IDs
+
+        window.onload = function() {
+            const userData = Telegram.WebApp.initDataUnsafe?.user;
+
+            if (window.innerWidth > 768) {
+                document.body.innerHTML = "<div style='color: #fff; text-align: center; padding: 20px;'><h1>Melodamore is only available on mobile devices.</h1><p>Please open this app on a mobile phone or tablet.</p></div>";
+                return;
+            }
+
+            if (userData && allowedUserIds.includes(userData.id)) {
+                // Authorized user, show the main app content and tab bar
+                document.querySelector('.tab-bar').style.display = 'flex';
+
+                // Set home as the default active tab on first load
+                switchTab('home');
+
+                // Populate profile tab
+                document.getElementById('name').textContent = `${userData.first_name} ${userData.last_name || ""}`;
+                document.getElementById('username').textContent = userData.username || "N/A";
+                document.getElementById('user-id').textContent = userData.id;
+
+                if (userData.photo_url) {
+                    document.getElementById('profile-pic').src = userData.photo_url;
+                }
+            } else {
+                // Unauthorized user, show access denied message only
+                document.getElementById('access-denied').classList.add('active');
+            }
+        };
+
+        function switchTab(tabId) {
+            // Hide all containers
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active');
+            });
+            // Show the selected container
+            document.getElementById(tabId).classList.add('active');
+
+            // Update tab styles to indicate the active tab
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active-tab');
+            });
+            document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active-tab');
+        }
+
+        function messageSupport() {
+            const userId = Telegram.WebApp.initDataUnsafe?.user?.id || "unknown";
+            const message = `I want to access the app. My ID is ${userId}.`;
+            const encodedMessage = encodeURIComponent(message);
+            window.location.href = `https://t.me/melodamore?text=${encodedMessage}`;
+        }
+    </script>
+</body>
+          </html>
