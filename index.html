@@ -4,48 +4,375 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <title>Melodamore Trading App</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+      .trade-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.trade-button {
+    background-color: #4caf50; /* Green */
+    color: white;
+    padding: 15px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.trade-button:hover {
+    background-color: #45a049; /* Darker green */
+    transform: translateY(-2px);
+}
+
+.trade-button i {
+    margin-right: 8px;
+}
+
+        .container img {
+            display: block;         
+            margin: 20px auto;     
+            max-width: 100%;       
+            height: auto;          
+            max-height: 500px;     
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #fff;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+        .container, .access-denied {
+            text-align: center;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            display: none;
+            transform: rotateY(10deg);
+            transition: transform 0.3s;
+        }
+        .container.active, .access-denied.active {
+            display: block;
+            transform: rotateY(0deg);
+        }
+        h1 {
+            font-size: 2rem;
+            margin: 15px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+        }
+        .profile-container {
+            text-align: center;
+            padding: 20px;
+        }
+        .profile-header {
+            margin-bottom: 20px;
+        }
+        .profile-pic {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        .info-container, .utilities-container {
+            text-align: left;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .info-container h2, .utilities-container h2 {
+            margin: 0 0 10px;
+            font-size: 1.5rem;
+            border-bottom: 1px solid #fff;
+            padding-bottom: 5px;
+        }
+        .personal-info p {
+            margin: 5px 0;
+        }
+        .utilities-container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .utilities-container li {
+            margin: 10px 0;
+        }
+        .utilities button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            background-color: #4a90e2;
+            color: #fff;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .utilities button:hover {
+            background-color: #357ab8;
+            transform: translateY(-2px);
+        }
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: space-around;
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+        }
+        .tab {
+            flex: 1;
+            padding: 10px 5px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s, transform 0.2s;
+            border-radius: 10px;
+        }
+        .tab:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        .active-tab {
+            background-color: #4a90e2;
+        }
+        .access-denied p {
+            font-size: 1.1rem;
+            margin-top: 20px;
+        }
+        .access-denied button {
+            background-color: #fff;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .access-denied button:hover {
+            background-color: #e0e0e0;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            .tab {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+        }
+        @media (max-width: 768px) {
+            .container {
+                max-width: 90%;
+            }
+        }
+  .back-button {
+          display: none;
+          position: fixed;
+          bottom: 40px;
+          left: 20px;
+          background-color: #ff5722;
+          color: white;
+          padding: 10px 15px;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 1rem;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+          z-index: 2000; /* Higher than the iframe */
+      }
+      
+      .back-button:hover {
+          background-color: #e64a19;
+      }
+      
+      
+      .loading-text {
+          display: none;
+          color: #fff;
+          margin-left: 10px;
+          font-size: 1rem;
+      }
+
+    </style>
 </head>
 <body>
-    <!-- Home Tab (Updated with Profile Content) -->
     <div id="home" class="container active">
-        <h1>Your Profile</h1>
-        <img id="profile-pic" class="profile-pic" src="https://via.placeholder.com/80" alt="Profile Picture" />
-        <p><b>Name:</b> <span id="name">Loading...</span></p>
-        <p><b>Username:</b> <span id="username">Loading...</span></p>
-        <p><b>ID:</b> <span id="user-id">Loading...</span></p>
+        <h1>Welcome to Melodamore!</h1>
+        <p>Explore binary and forex trading. Get started with Melodamore and enhance your trading knowledge!</p>
     </div>
-
-    <!-- Trade Tab -->
     <div id="trade" class="container">
-        <h1>Trade</h1>
-        <p>Start trading in binary and forex. Track market trends, analyze charts, and make informed trades.</p>
-    </div>
+    <h1>Trade</h1>
+    <p>Start trading in binary and forex. Track market trends, analyze charts, and make informed trades.</p>
+    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/trading-and-invest-app-3d-illustration-download-in-png-blend-fbx-gltf-file-formats--analytics-logo-loss-hand-holding-phone-pack-miscellaneous-illustrations-4723729.png" alt="3D Illustration" />
+    
+    <div class="trade-buttons">
+        <button class="trade-button" onclick="openTrade('pocket')">
+    <i class="fas fa-chart-line"></i> Pocket Option
+</button>
+<button class="trade-button" onclick="openTrade('quotex')">
+    <i class="fas fa-chart-line"></i> Quotex
+</button>
 
-    <!-- Learn Tab -->
+    </div>
+</div>
+
     <div id="learn" class="container">
         <h1>Learn</h1>
         <p>Access tutorials, tips, and guides to master binary and forex trading.</p>
+        <img src="https://static.vecteezy.com/system/resources/previews/027/118/562/original/boy-with-book-education-3d-illustration-png.png" alt="3D Illustration" />
     </div>
-
-    <!-- Access Denied Message -->
+    <div id="profile" class="container">
+        <h1>Your Profile</h1>
+        <div class="profile-container">
+            <div class="profile-header">
+                <img id="profile-pic" class="profile-pic" src="https://via.placeholder.com/100" alt="Profile Picture">
+                <h1 class="username" id="userId">Loading...</h1>
+            </div>
+            <div class="info-container">
+                <h2>Personal Information</h2>
+                <p><i class="fas fa-user"></i> Name: <span id="name">Loading...</span></p>
+                <p><i class="fas fa-envelope"></i> Email: <span id="email">example@example.com</span></p>
+                <p><i class="fas fa-user"></i> Username: <span id="username">Loading...</span></p>
+                <p><i class="fas fa-language"></i> Language: English</p>
+                <p><i class="fas fa-exchange-alt"></i> Trading Mode: Demo</p>
+            </div>
+            <div class="utilities-container">
+                <h2>Utilities</h2>
+                <ul>
+                    <li><button onclick="alert('Help-Desk Clicked!')"><i class="fas fa-question-circle"></i> Ask Help-Desk</button></li>
+                    <li><button onclick="alert('Join Channel Clicked!')"><i class="fas fa-comments"></i> Join Channel</button></li>
+                    <li><button onclick="alert('YouTube Clicked!')"><i class="fab fa-youtube"></i> YouTube</button></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="admin" class="container">
+        <h1>Admin Panel</h1>
+        <p>You are an Admin! Here you can manage everything.</p>
+        <!-- Add admin-specific functionalities here -->
+    </div>
     <div id="access-denied" class="access-denied">
         <h1>Access Denied</h1>
         <p>You are not authorized to access this app. Please contact the administrator.</p>
         <button onclick="messageSupport()">Message Support</button>
     </div>
-
-    <!-- Bottom Navigation Tabs (Updated Profile to Signals) -->
     <div class="tab-bar">
         <div class="tab active-tab" onclick="switchTab('home')"><i class="fas fa-home"></i><br>Home</div>
         <div class="tab" onclick="switchTab('trade')"><i class="fas fa-chart-line"></i><br>Trade</div>
         <div class="tab" onclick="switchTab('learn')"><i class="fas fa-book"></i><br>Learn</div>
-        <div class="tab" onclick="switchTab('signals')"><i class="fas fa-bell"></i><br>Signals</div>
+        <div class="tab" onclick="switchTab('profile')"><i class="fas fa-user"></i><br>Profile</div>
+        <div id="admin-tab" class="tab" style="display: none;" onclick="switchTab('admin')"><i class="fas fa-user-shield"></i><br>Admin</div>
     </div>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        let allowedUserIds = [];
+        let adminUserIds = [];
 
-    <script src="script.js"></script>
+        window.onload = function() {
+            fetch('auth_users.json')
+                .then(response => response.json())
+                .then(data => {
+                    allowedUserIds = data.allowedUserIds;
+                    return fetch('admin.json');
+                })
+                .then(response => response.json())
+                .then(data => {
+                    adminUserIds = data.adminUserIds;
+
+                    const userData = Telegram.WebApp.initDataUnsafe?.user;
+
+                    if (window.innerWidth > 768) {
+                        document.body.innerHTML = "<div style='color: #fff; text-align: center; padding: 20px;'><h1>Melodamore is only available on mobile devices.</h1><p>Please open this app on a mobile phone or tablet.</p></div>";
+                        return;
+                    }
+
+                    if (userData && allowedUserIds.includes(userData.id)) {
+                        document.querySelector('.tab-bar').style.display = 'flex';
+                        switchTab('home');
+
+                        document.getElementById('name').textContent = `${userData.first_name} ${userData.last_name || ""}`;
+                        document.getElementById('username').textContent = userData.username || "N/A";
+                        document.getElementById('email').textContent = userData.email || "N/A";
+                        document.getElementById('userId').textContent = userData.id;
+
+                        // Set profile picture or use a placeholder if not available
+                        document.getElementById('profile-pic').src = userData.photo_url || 'https://via.placeholder.com/100';
+
+                        // Check if the user is an admin
+                        if (adminUserIds.includes(userData.id)) {
+                            document.getElementById('admin-tab').style.display = 'block';
+                        }
+                    } else {
+                        document.getElementById('access-denied').classList.add('active');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching user data:', error);
+                });
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active-tab');
+            });
+            document.querySelector(`.tab[onclick="switchTab('${tabId}')"]`).classList.add('active-tab');
+        }
+
+        function messageSupport() {
+            const userId = Telegram.WebApp.initDataUnsafe?.user?.id || "unknown";
+            const message = `I want to access the app. My ID is ${userId}.`;
+            const encodedMessage = encodeURIComponent(message);
+            window.location.href = `https://t.me/melodamore?text=${encodedMessage}`;
+        }
+function openTrade(type) {
+    const url = type === 'pocket' ? 'https://pocketoption.com' : 'https://shorturl.at/RnBVO';
+    const container = document.createElement('iframe');
+    container.src = url;
+    container.style.width = '100%';
+    container.style.height = '100%';
+    container.style.position = 'fixed';
+    container.style.top = 0;
+    container.style.left = 0;
+    container.style.zIndex = 1000; // Keep the iframe behind the button
+    document.body.appendChild(container);
+    document.querySelector('.back-button').style.display = 'block'; // Show the back button
+}
+
+
+function goBack() {
+    document.querySelector('.back-button').style.display = 'none';
+    const iframes = document.querySelectorAll('iframe');
+    iframes.forEach(iframe => {
+        iframe.remove();
+    });
+    switchTab('trade');
+}
+
+    </script>
 
 <script src="https://static.app/js/static.js" type="text/javascript"></script>
+  <button class="back-button" onclick="goBack()">Back</button>
+  
+
 </body>
 </html>
